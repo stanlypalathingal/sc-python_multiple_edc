@@ -1,0 +1,5 @@
+pandas==0.25.3
+paho-mqtt
+cryptography==2.6.1
+asymcrypt
+requests
