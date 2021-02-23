@@ -104,6 +104,16 @@ def prepareForPublish1(fileName,publish_topic,key):
             publishResult(message,publish_topic)
     publishResult(KIE.encrypt(("done").encode()),publish_topic)
 
+def multi_thread(key):
+    thread1=Thread(target=prepareForPublish1,args=("test2.csv","usbdata_EDC1",key,))
+    thread2=Thread(target=prepareForPublish1,args=("test3.csv","usbdata_EDC2",key,))
+
+    thread1.start()
+    thread2.start()
+            
+    thread1.join()
+    thread2.join()
+
 i=0
 while(True):
     mess=subscribeStatus()
@@ -124,64 +134,64 @@ while(True):
         mess=KIS.decrypt(encrypted)
         
         if i==0:
-            df[0:1000].to_csv("test2.csv",mode='w+',index=False,header= None)
-            publishResult(str(1000),"decrypt_time")
-            thread1=Thread(target=prepareForPublish1,args=("test2.csv","usbdata_EDC",mess,))
-            thread2=Thread(target=prepareForPublish1,args=("test2.csv","usbdata_EDC",mess,))
-
-            thread1.start()
-            thread2.start()
-            
-            thread1.join()
-            thread2.join()
-            
-            prepareForPublish1("test2.csv","usbdata_EDC",mess)
+            df[0:500].to_csv("test2.csv",mode='w+',index=False,header= None)
+            df[500:1000].to_csv("test3.csv",mode='w+',index=False,header= None)
+            publishResult(str(1000),"decrypt_time1")
+            publishResult(str(1000),"decrypt_time2")
+            multi_thread(mess)
+        
             print("send to EDC")
-            number_of_rows=1000
             i=i+1
         elif i==1:
-            df[0:2000].to_csv("test2.csv",mode='w+',index=False,header= None)
-            publishResult(str(2000),"decrypt_time")
-            prepareForPublish1("test2.csv","usbdata_EDC",mess)
+            df[0:1000].to_csv("test2.csv",mode='w+',index=False,header= None)
+            df[1000:2000].to_csv("test3.csv",mode='w+',index=False,header= None)
+            publishResult(str(2000),"decrypt_time1")
+            publishResult(str(2000),"decrypt_time2")
+            multi_thread(mess)
+            #publishResult(str(2000),"decrypt_time")
             print("send to EDC")
-            number_of_rows=2000
             i=i+1
         elif i==2:
-            df[0:5000].to_csv("test2.csv",mode='w+',index=False,header= None)
-            publishResult(str(5000),"decrypt_time")
-            prepareForPublish1("test2.csv","usbdata_EDC",mess)
+            df[0:2500].to_csv("test2.csv",mode='w+',index=False,header= None)
+            df[2500:5000].to_csv("test3.csv",mode='w+',index=False,header= None)
+            publishResult(str(5000),"decrypt_time1")
+            publishResult(str(5000),"decrypt_time2")
+            multi_thread(mess)
+            #publishResult(str(5000),"decrypt_time")
             print("send to EDC")
-            number_of_rows=5000
             i=i+1
         elif i==3:
-            df[0:10000].to_csv("test2.csv",mode='w+',index=False,header= None)
-            publishResult(str(10000),"decrypt_time")
-            prepareForPublish1("test2.csv","usbdata_EDC",mess)
+            df[0:5000].to_csv("test2.csv",mode='w+',index=False,header= None)
+            df[5000:10000].to_csv("test3.csv",mode='w+',index=False,header= None)
+            publishResult(str(10000),"decrypt_time1")
+            publishResult(str(10000),"decrypt_time2")
+            multi_thread(mess)
+            #publishResult(str(10000),"decrypt_time")
             print("send to EDC")
-            number_of_rows=10000
             i=i+1
         elif i==4:
-            df[0:20000].to_csv("test2.csv",mode='w+',index=False,header= None)
-            publishResult(str(20000),"decrypt_time")
-            prepareForPublish1("test2.csv","usbdata_EDC",mess)
+            df[0:10000].to_csv("test2.csv",mode='w+',index=False,header= None)
+            df[10000:20000].to_csv("test3.csv",mode='w+',index=False,header= None)
+            publishResult(str(20000),"decrypt_time1")
+            publishResult(str(20000),"decrypt_time2")
+            multi_thread(mess)
+            #publishResult(str(20000),"decrypt_time")
             print("send to EDC")
-            number_of_rows=20000
             i=i+1
         elif i==5:
-            df[0:40000].to_csv("test2.csv",mode='w+',index=False,header= None)
-            publishResult(str(40000),"decrypt_time")
-            prepareForPublish1("test2.csv","usbdata_EDC",mess)
+            df[0:20000].to_csv("test2.csv",mode='w+',index=False,header= None)
+            df[20000:40000].to_csv("test3.csv",mode='w+',index=False,header= None)
+            publishResult(str(40000),"decrypt_time1")
+            publishResult(str(40000),"decrypt_time2")
+            multi_thread(mess)
+            #publishResult(str(40000),"decrypt_time")
             print("send to EDC")
-            number_of_rows=40000
             i=0
         
-        # value=False
         end3 = time.time()
         print(end3-start3)
         
         publishResult(str(end3-start3),"encrypt_time")
-        #bench = open("/benchmarking/encrypt_benchmark.csv","a+")
-        #bench.write(str(number_of_rows)+" , "+str(end3-start3)+"\n")
-        #bench.close()
+        
         df = pd.DataFrame()
         datThread(url1,url2,url3)
